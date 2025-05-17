@@ -1,50 +1,23 @@
 package webres
 
 import (
-	"github.com/fengdotdev/golibs-future/helpers"
+
+	"github.com/fengdotdev/golibs-future/async"
+)
+
+var _ async.Future[[]byte] = (*WebResource)(nil)
+
+var (
+	TimeOut = 1000 // 1 second
 )
 
 type WebResource struct {
+	timeout      int
 	id           string
 	channel      chan []byte
 	errorChannel chan error
 	complete     chan bool
-}
-type WebResourceAccessor struct {
-	Channel      *chan []byte
-	ErrorChannel *chan error
-	Complete     *chan bool
-}
-
-func NewWebResource[T any](url string) *WebResource {
-
-	id := helpers.GenerateIdentifier(url)
-	return &WebResource{
-		id:           id,
-		channel:      make(chan []byte, 1),
-		errorChannel: make(chan error, 1),
-		complete:     make(chan bool, 1),
-	}
-}
-
-func FetchWebResource[T any](url string) *WebResource {
-	resource := NewWebResource[[]byte](url)
-
-	go func() {
-
-		defer close(resource.channel)
-		defer close(resource.errorChannel)
-		defer close(resource.complete)
-
-		data, err := helpers.FetchURL(url)
-		if err != nil {
-			resource.errorChannel <- err
-			return
-		}
-
-		resource.channel <- data
-		resource.complete <- true
-
-	}()
-	return resource
+	cached       []byte
+	chachedErr   error
+	isCompleted  bool
 }
