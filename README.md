@@ -9,6 +9,7 @@ This Go module provides abstractions for handling asynchronous operations and st
 To install this module, use the following `go get` command:
 
 ```bash
-go get [github.com/fengdotdev/golibs-future](https://github.com/fengdotdev/golibs-future)
+go get github.com/fengdotdev/golibs-future
 
 ```
+
