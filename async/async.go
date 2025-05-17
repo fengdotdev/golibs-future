@@ -21,7 +21,7 @@ func NewCompleter[T any]() (*Completer[T], AsyncOperation[T]) {
 }
 
 // CompleteWithValue completes the AsyncOperation with a value.
-func (c *Completer[T]) CompleteWithValue(value T) {
+/* func (c *Completer[T]) CompleteWithValue(value T) {
 	select {
 	case c.future.result <- result[T]{value: value}:
 	default:
@@ -37,7 +37,7 @@ func (c *Completer[T]) CompleteWithError(err error) {
 		// Handle potential multiple completions (optional)
 	}
 }
-
+ */
 type future[T any] struct {
 	result <-chan result[T]
 }

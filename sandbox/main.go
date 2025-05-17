@@ -115,7 +115,7 @@ func IntermitenPause[T any](stream Stream[T], timer time.Duration) {
 	}()
 }
 
-func StreamReader(stream *IntStream) {
+func StreamReader2(stream *IntStream) {
 	for {
 		select {
 		case v, ok := <-stream.GetValue():
@@ -133,7 +133,6 @@ func main() {
 	stream := NumberGenerator()
 	TimeUP(stream, 30*time.Second)
 	IntermitenPause(stream, 5*time.Second)
-	StreamReader(stream)
 
 }
 
@@ -248,11 +247,7 @@ func FIleStream(ctx context.Context, filepath string) FutureStream {
 	return future
 }
 
-func StreamReader(ctx context.Context, dataChan chan []byte) {
-	for data := range dataChan {
-		fmt.Println("Received:", string(data))
-	}
-}
+
 
 func StreamFileReader(ctx context.Context, future FutureStream) {
 
