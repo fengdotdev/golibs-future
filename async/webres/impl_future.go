@@ -6,67 +6,51 @@ func (w *WebResource) Await() ([]byte, error) {
 	if w.isCompleted {
 		return w.cached, w.chachedErr
 	}
+	//block until the operation is completed
+	<-w.completeChannel
 
-	select {
-	case data := <-w.channel:
-		return data, nil
-	case err := <-w.errorChannel:
-		return nil, err
-
-	case <-w.complete:
-		return w.cached, w.chachedErr
-	}
+	return w.cached, w.chachedErr
 }
 
-func (w *WebResource) Then(then func(data []byte)) {
-	if w.isCompleted {
-		then(w.cached)
-		return
-	}
+func (w *WebResource) Then(thenFn func(data []byte)) {
 	go func() {
-		select {
-		case data := <-w.channel:
-			then(data)
-		case <-w.complete:
-			then(w.cached)
+
+		data, err := w.Await()
+		if err != nil {
+			return
+		}
+		thenFn(data)
+	}()
+
+}
+
+func (w *WebResource) ThenError(thenErrFn func(err error)) {
+	go func() {
+		_, err := w.Await()
+		if err != nil {
+			thenErrFn(err)
+			return
 		}
 	}()
 }
 
-func (w *WebResource) ThenError(then func(err error)) {
-	if w.isCompleted {
-		then(w.chachedErr)
-		return
-	}
+func (w *WebResource) Finally(finallyFn func()) {
 	go func() {
-		select {
-		case err := <-w.errorChannel:
-			then(err)
-		case <-w.complete:
-			then(w.chachedErr)
+		_, err := w.Await()
+		if err != nil {
+			return
 		}
+	
+		finallyFn()
 	}()
 }
 
-func (w *WebResource) Finally(then func()) {
-	if w.isCompleted {
-		then()
-		return
-	}
-	go func() {
-		select {
-		case <-w.complete:
-			then()
-		}
-	}()
+func (w *WebResource) GetChannel() *chan []byte {
+	return &w.channel
 }
-
-func (w *WebResource) GetChannel() chan []byte {
-	return w.channel
+func (w *WebResource) GetErrorChannel() *chan error {
+	return &w.errorChannel
 }
-func (w *WebResource) GetErrorChannel() chan error {
-	return w.errorChannel
-}
-func (w *WebResource) GetCompleteChannel() chan bool {
-	return w.complete
+func (w *WebResource) GetCompleteChannel() *chan bool {
+	return &w.completeChannel
 }

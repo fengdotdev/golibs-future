@@ -7,32 +7,56 @@ import (
 )
 
 func FetchWebResource(url string) *WebResource {
-	resource := NewWebResource[[]byte](url)
+	resource := NewWebResource(url)
+
+	fnlast := func() {
+		close(resource.channel)
+		close(resource.errorChannel)
+		close(resource.completeChannel)
+
+		if resource.cached == nil && resource.chachedErr == nil {
+			resource.chachedErr = errors.New("something went wrong")
+		}
+		resource.isCompleted = true
+	}
+
+	fnTimeout := func() {
+		// todo
+		err := errors.New("timeout")
+		resource.channel <- nil
+		resource.errorChannel <- err
+		resource.chachedErr = err
+		resource.completeChannel <- true
+		resource.isCompleted = true
+	}
 
 	go func() {
 
-		defer close(resource.channel)
-		defer close(resource.errorChannel)
-		defer close(resource.complete)
-		defer func() {
-			if resource.cached == nil {
-				resource.chachedErr = errors.New("something went wrong")
+		defer fnlast()
+		go func() {
+			data, err := helpers.FetchURL(url)
+			if err != nil {
+				resource.errorChannel <- err
+				resource.chachedErr = err
+				resource.completeChannel <- true
+				resource.isCompleted = true
+				return
 			}
+
+			resource.channel <- data
+			resource.cached = data
+			resource.completeChannel <- true
 			resource.isCompleted = true
+
 		}()
 
-		data, err := helpers.FetchURL(url)
-		if err != nil {
-			resource.errorChannel <- err
-			resource.chachedErr = err
+		select {
+		case <-resource.ctxTimeout.Done():
+			fnTimeout()
+			return
+		case <-resource.completeChannel:
 			return
 		}
-
-		// single source of truth
-		resource.channel <- data
-		resource.cached = data
-		resource.complete <- true
-
 	}()
 	return resource
 }

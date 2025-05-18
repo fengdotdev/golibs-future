@@ -6,28 +6,12 @@ var _ trait.Result[[]byte] = (*WebResource)(nil)
 
 // Error implements async.Future.
 func (w *WebResource) Error() error {
-	if w.isCompleted {
-		return w.chachedErr
-	}
-
-	select {
-	case err := <-w.errorChannel:
-		return err
-	}
+	panic("not implemented")
 }
 
 // IsValid implements async.Future.
 func (w *WebResource) IsValid() bool {
-	if w.isCompleted {
-		return w.chachedErr == nil
-	}
-
-	select {
-	case err := <-w.errorChannel:
-		return err == nil
-	default:
-		return false
-	}
+	panic("not implemented")
 }
 
 // String implements async.Future.
@@ -41,58 +25,21 @@ func (w *WebResource) String() string {
 
 // Value implements async.Future.
 func (w *WebResource) Value() []byte {
-	if w.isCompleted {
-		return w.cached
-	}
-	select {
-	case data := <-w.channel:
-		return data
-	}
+	panic("not implemented")
 }
 
 // ValueOr implements async.Future.
 func (w *WebResource) ValueOr(or []byte) []byte {
-	if w.isCompleted {
-		return w.cached
-	}
-
-	select {
-	case data := <-w.channel:
-		return data
-	case err := <-w.errorChannel:
-		if err != nil {
-			return or
-		}
-	}
-
-	return or
+	panic("not implemented")
 }
 
 // ValueOrErr implements async.Future.
 func (w *WebResource) ValueOrErr() ([]byte, error) {
-	if w.isCompleted {
-		return w.cached, w.chachedErr
-	}
-
-	select {
-	case data := <-w.channel:
-		return data, nil
-	case err := <-w.errorChannel:
-		return nil, err
-	}
+	panic("not implemented")
 }
 
 // ValueOrPanic implements async.Future.
 func (w *WebResource) ValueOrPanic() []byte {
-	if w.isCompleted {
-		return w.cached
-	}
-
-	select {
-	case data := <-w.channel:
-		return data
-	case err := <-w.errorChannel:
-		panic(err)
-	}
+	panic("not implemented")
 
 }
