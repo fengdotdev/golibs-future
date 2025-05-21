@@ -4,7 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 
-	"github.com/fengdotdev/golibs-future/def"
+	"github.com/fengdotdev/golibs-future/sandbox/def"
 )
 
 func GenerateIdentifier(input string) def.Identifier {
