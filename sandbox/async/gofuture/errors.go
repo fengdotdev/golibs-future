@@ -3,5 +3,7 @@ package gofuture
 import "errors"
 
 var (
-	ErrPromiseNotResolved = errors.New("promise not resolved")
+	ErrFututeNotCompleted     = errors.New("Future not completed")
+	ErrFutureAlreadyCompleted = errors.New("Future already completed")
+	ErrFutureNotInitialized   = errors.New("Future not initialized")
 )

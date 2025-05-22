@@ -1,9 +1,11 @@
 package gofuture
 
-import "github.com/fengdotdev/golibs-traits/trait"
+import (
+	"github.com/fengdotdev/golibs-future/sandbox/async"
+)
 
-// ensure GoFuture implements trait.Result
-var _ trait.Result[any] = (*GoFuture[any])(nil)
+// ensure GoFuture implements FutureOr || (trait.Result)
+var _ async.FutureOr[any] = (*GoFuture[any])(nil)
 
 // Error implements trait.Result.
 func (g *GoFuture[T]) Error() error {
