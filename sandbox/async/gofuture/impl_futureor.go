@@ -38,10 +38,9 @@ func (g *GoFuture[T]) String() string {
 
 // Value implements trait.Result.
 func (g *GoFuture[T]) Value() T {
-	g.mu.Lock()
-	defer g.mu.Unlock()
-
 	if g.IsValid() {
+		g.mu.Lock()
+		defer g.mu.Unlock()
 		return g.cached
 	}
 
@@ -52,10 +51,10 @@ func (g *GoFuture[T]) Value() T {
 
 // ValueOr implements trait.Result.
 func (g *GoFuture[T]) ValueOr(or T) T {
-	g.mu.Lock()
-	defer g.mu.Unlock()
 
 	if g.IsValid() {
+		g.mu.Lock()
+		defer g.mu.Unlock()
 		return g.cached
 	}
 	return or
@@ -63,10 +62,10 @@ func (g *GoFuture[T]) ValueOr(or T) T {
 
 // ValueOrErr implements trait.Result.
 func (g *GoFuture[T]) ValueOrErr() (T, error) {
-	g.mu.Lock()
-	defer g.mu.Unlock()
 
 	if g.IsValid() {
+		g.mu.Lock()
+		defer g.mu.Unlock()
 		return g.cached, nil
 	}
 	var Zero T
@@ -75,10 +74,10 @@ func (g *GoFuture[T]) ValueOrErr() (T, error) {
 
 // ValueOrPanic implements trait.Result.
 func (g *GoFuture[T]) ValueOrPanic() T {
-	g.mu.Lock()
-	defer g.mu.Unlock()
 
 	if g.IsValid() {
+		g.mu.Lock()
+		defer g.mu.Unlock()
 		return g.cached
 	}
 	panic(g.cachedErr)

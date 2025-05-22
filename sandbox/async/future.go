@@ -1,13 +1,11 @@
 package async
 
 import (
-
 	"github.com/fengdotdev/golibs-traits/trait"
 )
 
 // must be a container of some T in the future
 type Future[T any] interface {
-	FutureOr[T]
 	Awaitable[T]
 	Completer[T]
 	FutureOperations[T]
@@ -15,7 +13,7 @@ type Future[T any] interface {
 }
 
 type Awaitable[T any] interface {
-	Await() (done chan bool, future Future[T])
+	Await() (result chan FutureOr[T])
 }
 
 type Completer[T any] interface {
