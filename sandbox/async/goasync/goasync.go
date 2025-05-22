@@ -80,7 +80,7 @@ type GoAsync[T any] struct {
 	inizialized bool
 	timeout     time.Duration
 	id          string
-	promise     async.Promise[T]
+	promise     async.Future[T]
 	mu          sync.Mutex
 	ctxTimeout  context.Context
 	ctxCancel   context.CancelFunc

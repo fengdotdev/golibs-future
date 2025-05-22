@@ -1,4 +1,4 @@
-package gopromise
+package gofuture
 
 import "errors"
 

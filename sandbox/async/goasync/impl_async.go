@@ -1,9 +1,9 @@
-package goasync
+package gopromise
 
 import "github.com/fengdotdev/golibs-future/sandbox/async"
 
 // Await implements async.Async.
-func (g *GoAsync[T]) Await() (done chan bool, promise async.Promise[T]) {
+func (g *GoAsync[T]) Await() (done chan bool, promise async.Future[T]) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
