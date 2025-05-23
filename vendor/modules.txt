@@ -1,0 +1,9 @@
+# github.com/fengdotdev/golibs-funcs v0.0.3
+## explicit; go 1.24.2
+github.com/fengdotdev/golibs-funcs/v0/asserty
+# github.com/fengdotdev/golibs-testing v0.1.1
+## explicit; go 1.23.5
+github.com/fengdotdev/golibs-testing/assert
+# github.com/fengdotdev/golibs-traits v0.2.1
+## explicit; go 1.23.5
+github.com/fengdotdev/golibs-traits/trait
